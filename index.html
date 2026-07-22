@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>US Enrolled Agent — Hi-Educare (Narrated Draft)</title>
+<style>
+  :root{
+    --bg:#f5f4ed; --bg2:#faf9f5; --bg3:#e8e6dc; --border:#f0eee6;
+    --accent:#c96442; --accent2:#d97757; --text:#141413; --muted:#5e5d59;
+    --dark:#141413; --dark2:#30302e;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--dark);color:var(--text);font:15px/1.6 system-ui,-apple-system,sans-serif;height:100dvh;display:flex;flex-direction:column;overflow:hidden}
+  #stage{flex:1;display:flex;align-items:center;justify-content:center;position:relative;min-height:0}
+  #slide{max-width:100%;max-height:100%;object-fit:contain;background:#fff}
+  #draft{position:absolute;top:12px;right:16px;background:rgba(201,100,66,.92);color:#fff;font-weight:600;font-size:12px;letter-spacing:.12em;padding:4px 12px;border-radius:4px;pointer-events:none}
+  #bar{display:flex;align-items:center;gap:14px;padding:10px 18px;background:var(--dark2);color:#b0aea5;font-size:13px;flex-wrap:wrap}
+  #bar button{background:var(--accent);border:0;color:#fff;font:600 13px system-ui;padding:7px 16px;border-radius:6px;cursor:pointer}
+  #bar button:hover{background:var(--accent2)}
+  #bar button.ghost{background:transparent;border:1px solid #5e5d59;color:#b0aea5}
+  #progress{flex:1;height:4px;background:#454440;border-radius:2px;min-width:120px;overflow:hidden}
+  #progress i{display:block;height:100%;width:0;background:var(--accent2);transition:width .3s}
+  #overlay{position:absolute;inset:0;background:rgba(20,20,19,.88);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;color:#f5f4ed;text-align:center;padding:24px;z-index:5}
+  #overlay h1{font-family:Georgia,serif;font-weight:500;font-size:clamp(22px,4vw,34px);line-height:1.2}
+  #overlay p{color:#b0aea5;max-width:46ch}
+  #overlay button{background:var(--accent);border:0;color:#fff;font:600 16px system-ui;padding:14px 34px;border-radius:8px;cursor:pointer}
+  #overlay button:hover{background:var(--accent2)}
+  .hide{display:none !important}
+</style>
+</head>
+<body>
+<div id="stage">
+  <img id="slide" src="slides/slide01.png" alt="Slide 1">
+  <div id="draft">DRAFT — NARRATION NOT YET APPROVED</div>
+  <div id="overlay">
+    <h1>US Enrolled Agent<br>with Hi-Educare</h1>
+    <p>A narrated presentation. Slides advance automatically after each voice segment. Use ← → keys to navigate, space to pause.</p>
+    <button id="start">▶ Start presentation</button>
+  </div>
+</div>
+<div id="bar">
+  <button id="prev" class="ghost">←</button>
+  <button id="playpause">Pause</button>
+  <button id="next" class="ghost">→</button>
+  <span id="counter">1 / 22</span>
+  <div id="progress"><i></i></div>
+  <label><input type="checkbox" id="auto" checked> auto-advance</label>
+</div>
+<script>
+const N = 22, GAP_MS = 1200, FALLBACK_S = 5;
+let cur = 1, playing = false, gapTimer = null;
+const audio = new Audio();
+const $ = id => document.getElementById(id);
+const pad = n => String(n).padStart(2, '0');
+
+function show(n, speak = true) {
+  cur = Math.min(N, Math.max(1, n));
+  clearTimeout(gapTimer);
+  $('slide').src = `slides/slide${pad(cur)}.png`;
+  $('slide').alt = `Slide ${cur}`;
+  $('counter').textContent = `${cur} / ${N}`;
+  $('progress').firstElementChild.style.width = (cur / N * 100) + '%';
+  audio.pause();
+  if (speak) {
+    audio.src = `audio/slide${pad(cur)}.mp3`;
+    audio.play().then(() => setPlaying(true)).catch(() => {
+      // missing audio or blocked: fall back to timed advance
+      setPlaying(true);
+      gapTimer = setTimeout(advance, FALLBACK_S * 1000);
+    });
+  }
+}
+function advance() {
+  if (!$('auto').checked || !playing) return;
+  if (cur < N) show(cur + 1); else setPlaying(false);
+}
+audio.addEventListener('ended', () => { gapTimer = setTimeout(advance, GAP_MS); });
+function setPlaying(p) {
+  playing = p;
+  $('playpause').textContent = p ? 'Pause' : 'Play';
+}
+$('start').onclick = () => { $('overlay').classList.add('hide'); show(1); };
+$('playpause').onclick = () => {
+  if (playing) { audio.pause(); clearTimeout(gapTimer); setPlaying(false); }
+  else { audio.paused && audio.src && !audio.ended ? audio.play() : show(cur); setPlaying(true); }
+};
+$('prev').onclick = () => show(cur - 1);
+$('next').onclick = () => show(cur + 1);
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') show(cur + 1);
+  else if (e.key === 'ArrowLeft') show(cur - 1);
+  else if (e.key === ' ') { e.preventDefault(); $('playpause').click(); }
+});
+</script>
+</body>
+</html>
