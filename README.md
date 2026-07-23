@@ -4,8 +4,9 @@ Self-presenting HTML slideshow: 22 slides from `US EA @Hi-Educare.pptx`, each na
 auto-advancing after each voice segment. Open `index.html` (or the Pages URL), press Start.
 
 **Status: DRAFT.** Narration script (`narration.md`) is AI-drafted from slide content and
-NOT yet approved by Haresh. Voice: Haresh Ratnagrahi instant clone (draft quality — source is a 40s WhatsApp note;
-settings: stability 0.35, similarity 1.0, style 0.6, eleven_multilingual_v2).
+NOT yet approved by Haresh. Voice: Haresh Ratnagrahi instant clone v2 — source is 6.6 min of clean
+solo speech extracted from his Vimeo lecture (diarization-verified, loudness-normalized;
+settings: stability 0.5, similarity 0.85, style 0.15, eleven_multilingual_v2).
 
 ## Pipeline (to redo for any deck)
 

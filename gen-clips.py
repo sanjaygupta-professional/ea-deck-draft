@@ -13,9 +13,9 @@ import urllib.request
 from pathlib import Path
 
 HERE = Path(__file__).parent
-VOICE_ID = "S8pW79g2R9i7kEyDdoo5"  # Haresh Bhai draft clone
+VOICE_ID = "nlGgswSMHWB9KTixQBt5"  # Haresh clone v2 (6.6 min lecture sample)
 MODEL = "eleven_multilingual_v2"
-SETTINGS = {"stability": 0.35, "similarity_boost": 1.0, "style": 0.6, "use_speaker_boost": True}
+SETTINGS = {"stability": 0.5, "similarity_boost": 0.85, "style": 0.15, "use_speaker_boost": True}
 
 
 def parse_narration():
